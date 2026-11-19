@@ -1,0 +1,4 @@
+<resources><string name="app_name">Aurora Sweep</string>
+<string name="accent_color">Cor</string><string name="c_white">Branco</string><string name="c_gold">Dourado</string><string name="c_aurora">Aurora</string><string name="c_lilac">Lilás</string><string name="c_sky">Céu</string>
+<string name="sweep_mono">Preto e branco no ponteiro</string><string name="sweep_dim">Escurecer no ponteiro</string><string name="dim_none">Nada</string><string name="dim_light">Leve</string><string name="dim_medium">Média</string><string name="dim_strong">Forte</string>
+<string name="format_24h">24 horas</string></resources>

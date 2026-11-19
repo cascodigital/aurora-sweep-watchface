@@ -1,349 +1,505 @@
 <WatchFace width="450" height="450" clipShape="CIRCLE">
-  <Metadata key="CLOCK_TYPE" value="DIGITAL"/>
+  <Metadata key="CLOCK_TYPE" value="ANALOG"/>
   <Metadata key="PREVIEW_TIME" value="10:08:32"/>
+  <BitmapFonts><BitmapFont name="hrSolid"><Character name="0" resource="hr_s_0" width="150" height="230"/><Character name="1" resource="hr_s_1" width="96" height="230"/><Character name="2" resource="hr_s_2" width="145" height="230"/><Character name="3" resource="hr_s_3" width="140" height="230"/><Character name="4" resource="hr_s_4" width="154" height="230"/><Character name="5" resource="hr_s_5" width="140" height="230"/><Character name="6" resource="hr_s_6" width="140" height="230"/><Character name="7" resource="hr_s_7" width="130" height="230"/><Character name="8" resource="hr_s_8" width="141" height="230"/><Character name="9" resource="hr_s_9" width="139" height="230"/></BitmapFont><BitmapFont name="hrLine"><Character name="0" resource="hr_l_0" width="150" height="230"/><Character name="1" resource="hr_l_1" width="96" height="230"/><Character name="2" resource="hr_l_2" width="145" height="230"/><Character name="3" resource="hr_l_3" width="140" height="230"/><Character name="4" resource="hr_l_4" width="154" height="230"/><Character name="5" resource="hr_l_5" width="140" height="230"/><Character name="6" resource="hr_l_6" width="140" height="230"/><Character name="7" resource="hr_l_7" width="130" height="230"/><Character name="8" resource="hr_l_8" width="141" height="230"/><Character name="9" resource="hr_l_9" width="139" height="230"/></BitmapFont></BitmapFonts>
+  <UserConfigurations>
+    <ColorConfiguration id="accent" displayName="accent_color" defaultValue="0">
+      <ColorOption id="0" displayName="c_white" colors="#ffffffff"/>
+      <ColorOption id="1" displayName="c_gold" colors="#ffffd98a"/>
+      <ColorOption id="2" displayName="c_aurora" colors="#ff8ff0c0"/>
+      <ColorOption id="3" displayName="c_lilac" colors="#ffc9b6ff"/>
+      <ColorOption id="4" displayName="c_sky" colors="#ff9fd3ff"/>
+    </ColorConfiguration>
+    <BooleanConfiguration id="mono" displayName="sweep_mono" defaultValue="TRUE"/>
+    <ListConfiguration id="dim" displayName="sweep_dim" defaultValue="0">
+      <ListOption id="0" displayName="dim_none"/>
+      <ListOption id="1" displayName="dim_light"/>
+      <ListOption id="2" displayName="dim_medium"/>
+      <ListOption id="3" displayName="dim_strong"/>
+    </ListConfiguration>
+    <BooleanConfiguration id="h24" displayName="format_24h" defaultValue="TRUE"/>
+  </UserConfigurations>
   <Scene backgroundColor="#ff000000">
+    <Group x="0" y="0" width="1" height="1" name="refs">
+      <PartDraw x="0" y="0" width="1" height="1"><Transform target="x" value="[HOUR_0_23] * 60 + [MINUTE] + [SECOND] / 60"/><Reference name="M" source="x" defaultValue="0"/><Rectangle x="0" y="0" width="1" height="1"><Fill color="#00000000"/></Rectangle></PartDraw>
+      <PartDraw x="0" y="0" width="1" height="1"><Transform target="x" value="[DAY_OF_YEAR]"/><Reference name="DOY" source="x" defaultValue="0"/><Rectangle x="0" y="0" width="1" height="1"><Fill color="#00000000"/></Rectangle></PartDraw>
+      <PartDraw x="0" y="0" width="1" height="1"><Transform target="x" value="([WEATHER.IS_AVAILABLE] ? [WEATHER.CONDITION] : 0)"/><Reference name="C" source="x" defaultValue="0"/><Rectangle x="0" y="0" width="1" height="1"><Fill color="#00000000"/></Rectangle></PartDraw>
+      <PartDraw x="0" y="0" width="1" height="1"><Transform target="x" value="365.0 + 58.1 * cos(6.2832 * ([REFERENCE.DOY] - 355) / 365)"/><Reference name="HD" source="x" defaultValue="0"/><Rectangle x="0" y="0" width="1" height="1"><Fill color="#00000000"/></Rectangle></PartDraw>
+      <PartDraw x="0" y="0" width="1" height="1"><Transform target="x" value="744.9 - [REFERENCE.HD]"/><Reference name="RISE" source="x" defaultValue="0"/><Rectangle x="0" y="0" width="1" height="1"><Fill color="#00000000"/></Rectangle></PartDraw>
+      <PartDraw x="0" y="0" width="1" height="1"><Transform target="x" value="744.9 + [REFERENCE.HD]"/><Reference name="SET" source="x" defaultValue="0"/><Rectangle x="0" y="0" width="1" height="1"><Fill color="#00000000"/></Rectangle></PartDraw>
+      <PartDraw x="0" y="0" width="1" height="1"><Transform target="x" value="clamp(([REFERENCE.M] - [REFERENCE.RISE] + 25) / 50, 0, 1) * (1 - clamp(([REFERENCE.M] - [REFERENCE.SET] + 25) / 50, 0, 1))"/><Reference name="D" source="x" defaultValue="0"/><Rectangle x="0" y="0" width="1" height="1"><Fill color="#00000000"/></Rectangle></PartDraw>
+      <PartDraw x="0" y="0" width="1" height="1"><Transform target="x" value="(([MINUTE] == 59) ? clamp(([SECOND] + [MILLISECOND] / 1000 - 57) / 3, 0, 1) : 0)"/><Reference name="FLIP" source="x" defaultValue="0"/><Rectangle x="0" y="0" width="1" height="1"><Fill color="#00000000"/></Rectangle></PartDraw>
+      <PartDraw x="0" y="0" width="1" height="1"><Transform target="x" value="clamp(([REFERENCE.M] - [REFERENCE.RISE]) / ([REFERENCE.SET] - [REFERENCE.RISE]), 0, 1)"/><Reference name="P" source="x" defaultValue="0"/><Rectangle x="0" y="0" width="1" height="1"><Fill color="#00000000"/></Rectangle></PartDraw>
+      <PartDraw x="0" y="0" width="1" height="1"><Transform target="x" value="clamp(fract(([REFERENCE.M] - [REFERENCE.SET]) / 1440) * 1440 / (1440 - ([REFERENCE.SET] - [REFERENCE.RISE])), 0, 1)"/><Reference name="PN" source="x" defaultValue="0"/><Rectangle x="0" y="0" width="1" height="1"><Fill color="#00000000"/></Rectangle></PartDraw>
+      <PartDraw x="0" y="0" width="1" height="1"><Transform target="x" value="clamp(1 - abs([REFERENCE.M] - [REFERENCE.RISE]) / 55, 0, 1) + clamp(1 - abs([REFERENCE.M] - [REFERENCE.SET]) / 55, 0, 1)"/><Reference name="DUSK" source="x" defaultValue="0"/><Rectangle x="0" y="0" width="1" height="1"><Fill color="#00000000"/></Rectangle></PartDraw>
+      <PartDraw x="0" y="0" width="1" height="1"><Transform target="x" value="([REFERENCE.D] &gt;= 0.5) ? (([REFERENCE.M] &gt;= [REFERENCE.RISE] + 30 &amp;&amp; [REFERENCE.M] &lt; [REFERENCE.SET] - 60) ? (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 18) * 18) : 16.5) : (22 + fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 20) * 20)"/><Reference name="TP" source="x" defaultValue="0"/><Rectangle x="0" y="0" width="1" height="1"><Fill color="#00000000"/></Rectangle></PartDraw>
+      <PartDraw x="0" y="0" width="1" height="1"><Transform target="x" value="((([REFERENCE.M] &gt;= [REFERENCE.SET] - 30) &amp;&amp; ([REFERENCE.M] &lt; 1380)) || (([REFERENCE.M] &gt;= [REFERENCE.RISE] - 40) &amp;&amp; ([REFERENCE.M] &lt; [REFERENCE.RISE] + 30))) ? 1 : 0"/><Reference name="LON" source="x" defaultValue="0"/><Rectangle x="0" y="0" width="1" height="1"><Fill color="#00000000"/></Rectangle></PartDraw>
+      <PartDraw x="0" y="0" width="1" height="1"><Transform target="x" value="([REFERENCE.C] == 2 || [REFERENCE.C] == 4 || [REFERENCE.C] == 5 || [REFERENCE.C] == 6 || [REFERENCE.C] == 7 || [REFERENCE.C] == 9 || [REFERENCE.C] == 10) ? 1 : (([REFERENCE.C] == 11 || [REFERENCE.C] == 12) ? 0.75 : (([REFERENCE.C] == 3 || [REFERENCE.C] == 13) ? 0.6 : ([REFERENCE.C] == 14 ? 0.15 : ([REFERENCE.C] == 15 ? 0.3 : 0))))"/><Reference name="CL" source="x" defaultValue="0"/><Rectangle x="0" y="0" width="1" height="1"><Fill color="#00000000"/></Rectangle></PartDraw>
+      <PartDraw x="0" y="0" width="1" height="1"><Transform target="x" value="([REFERENCE.C] == 4 || [REFERENCE.C] == 9) ? 1 : ([REFERENCE.C] == 6 ? 0.7 : (([REFERENCE.C] == 12 || [REFERENCE.C] == 10) ? 0.4 : 0))"/><Reference name="RAIN" source="x" defaultValue="0"/><Rectangle x="0" y="0" width="1" height="1"><Fill color="#00000000"/></Rectangle></PartDraw>
+      <PartDraw x="0" y="0" width="1" height="1"><Transform target="x" value="[REFERENCE.C] == 5 ? 1 : ([REFERENCE.C] == 7 ? 0.7 : (([REFERENCE.C] == 11 || [REFERENCE.C] == 10) ? 0.45 : 0))"/><Reference name="SNOW" source="x" defaultValue="0"/><Rectangle x="0" y="0" width="1" height="1"><Fill color="#00000000"/></Rectangle></PartDraw>
+      <PartDraw x="0" y="0" width="1" height="1"><Transform target="x" value="[REFERENCE.C] == 3 ? 1 : ([REFERENCE.C] == 13 ? 0.6 : 0)"/><Reference name="FOG" source="x" defaultValue="0"/><Rectangle x="0" y="0" width="1" height="1"><Fill color="#00000000"/></Rectangle></PartDraw>
+      <PartDraw x="0" y="0" width="1" height="1"><Transform target="x" value="([REFERENCE.C] == 15 || [REFERENCE.C] == 9 || [REFERENCE.C] == 4) ? 1 : 0"/><Reference name="WINDY" source="x" defaultValue="0"/><Rectangle x="0" y="0" width="1" height="1"><Fill color="#00000000"/></Rectangle></PartDraw>
+      <PartDraw x="0" y="0" width="1" height="1"><Transform target="x" value="clamp(1.7 * cos(6.2832 * ([REFERENCE.DOY] - 110) / 365) - 0.7, 0, 1)"/><Reference name="AUT" source="x" defaultValue="0"/><Rectangle x="0" y="0" width="1" height="1"><Fill color="#00000000"/></Rectangle></PartDraw>
+      <PartDraw x="0" y="0" width="1" height="1"><Transform target="x" value="clamp(1.7 * cos(6.2832 * ([REFERENCE.DOY] - 200) / 365) - 0.7, 0, 1)"/><Reference name="WIN" source="x" defaultValue="0"/><Rectangle x="0" y="0" width="1" height="1"><Fill color="#00000000"/></Rectangle></PartDraw>
+      <PartDraw x="0" y="0" width="1" height="1"><Transform target="x" value="clamp(1.7 * cos(6.2832 * ([REFERENCE.DOY] - 290) / 365) - 0.7, 0, 1)"/><Reference name="SPR" source="x" defaultValue="0"/><Rectangle x="0" y="0" width="1" height="1"><Fill color="#00000000"/></Rectangle></PartDraw>
+      <PartDraw x="0" y="0" width="1" height="1"><Transform target="x" value="clamp(1.7 * cos(6.2832 * ([REFERENCE.DOY] - 20) / 365) - 0.7, 0, 1)"/><Reference name="SUM" source="x" defaultValue="0"/><Rectangle x="0" y="0" width="1" height="1"><Fill color="#00000000"/></Rectangle></PartDraw>
+    </Group>
+
     <Group x="0" y="0" width="450" height="450" name="scene">
       <Variant mode="AMBIENT" target="alpha" value="0"/>
       <PartImage x="0" y="0" width="450" height="450">
         <Image resource="sky_day"/>
       </PartImage>
       <PartImage x="0" y="0" width="450" height="450">
-        <Transform target="alpha" value="255 * (clamp(((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 18) / 4, 0, 1) - clamp(((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 41) / 4, 0, 1))"/>
+        <Transform target="alpha" value="255 * (1 - [REFERENCE.D])"/>
         <Image resource="sky_night"/>
       </PartImage>
+      <PartImage x="0" y="0" width="450" height="450" name="dusk">
+        <Transform target="alpha" value="210 * clamp([REFERENCE.DUSK], 0, 1) * (1 - 0.7 * [REFERENCE.CL])"/>
+        <Image resource="sky_dusk"/>
+      </PartImage>
       <PartImage x="60" y="70" width="20" height="20">
-        <Transform target="alpha" value="(clamp(((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 18) / 4, 0, 1) - clamp(((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 41) / 4, 0, 1)) * (140 + 115 * sin((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) * 1.3 + 0))"/>
+        <Transform target="alpha" value="(1 - [REFERENCE.D]) * (140 + 115 * sin(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) * 1.3 + 0))"/>
         <Image resource="star"/>
       </PartImage>
       <PartImage x="140" y="40" width="20" height="20">
-        <Transform target="alpha" value="(clamp(((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 18) / 4, 0, 1) - clamp(((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 41) / 4, 0, 1)) * (140 + 115 * sin((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) * 2.1 + 1))"/>
+        <Transform target="alpha" value="(1 - [REFERENCE.D]) * (140 + 115 * sin(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) * 2.1 + 1))"/>
         <Image resource="star"/>
       </PartImage>
       <PartImage x="330" y="55" width="20" height="20">
-        <Transform target="alpha" value="(clamp(((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 18) / 4, 0, 1) - clamp(((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 41) / 4, 0, 1)) * (140 + 115 * sin((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) * 1.7 + 2))"/>
+        <Transform target="alpha" value="(1 - [REFERENCE.D]) * (140 + 115 * sin(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) * 1.7 + 2))"/>
         <Image resource="star"/>
       </PartImage>
       <PartImage x="395" y="120" width="20" height="20">
-        <Transform target="alpha" value="(clamp(((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 18) / 4, 0, 1) - clamp(((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 41) / 4, 0, 1)) * (140 + 115 * sin((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) * 2.6 + 3))"/>
+        <Transform target="alpha" value="(1 - [REFERENCE.D]) * (140 + 115 * sin(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) * 2.6 + 3))"/>
         <Image resource="star"/>
       </PartImage>
       <PartImage x="30" y="150" width="20" height="20">
-        <Transform target="alpha" value="(clamp(((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 18) / 4, 0, 1) - clamp(((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 41) / 4, 0, 1)) * (140 + 115 * sin((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) * 1.1 + 4))"/>
+        <Transform target="alpha" value="(1 - [REFERENCE.D]) * (140 + 115 * sin(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) * 1.1 + 4))"/>
         <Image resource="star"/>
       </PartImage>
       <PartImage x="250" y="30" width="20" height="20">
-        <Transform target="alpha" value="(clamp(((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 18) / 4, 0, 1) - clamp(((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 41) / 4, 0, 1)) * (140 + 115 * sin((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) * 1.9 + 5))"/>
+        <Transform target="alpha" value="(1 - [REFERENCE.D]) * (140 + 115 * sin(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) * 1.9 + 5))"/>
         <Image resource="star"/>
       </PartImage>
       <PartImage x="190" y="95" width="20" height="20">
-        <Transform target="alpha" value="(clamp(((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 18) / 4, 0, 1) - clamp(((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 41) / 4, 0, 1)) * (140 + 115 * sin((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) * 2.4 + 6))"/>
+        <Transform target="alpha" value="(1 - [REFERENCE.D]) * (140 + 115 * sin(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) * 2.4 + 6))"/>
         <Image resource="star"/>
       </PartImage>
       <PartImage x="410" y="200" width="20" height="20">
-        <Transform target="alpha" value="(clamp(((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 18) / 4, 0, 1) - clamp(((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 41) / 4, 0, 1)) * (140 + 115 * sin((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) * 1.5 + 7))"/>
+        <Transform target="alpha" value="(1 - [REFERENCE.D]) * (140 + 115 * sin(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) * 1.5 + 7))"/>
         <Image resource="star"/>
       </PartImage>
       <PartImage x="0" y="0" width="900" height="280">
-        <Transform target="x" value="-450 * fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) / 45)"/>
-        <Transform target="alpha" value="255 * (clamp(((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 18) / 4, 0, 1) - clamp(((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 41) / 4, 0, 1))"/>
+        <Transform target="x" value="-450 * fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45)"/>
+        <Transform target="alpha" value="255 * (1 - [REFERENCE.D])"/>
         <Image resource="aurora"/>
       </PartImage>
-      <PartImage x="0" y="0" width="100" height="100">
-        <Transform target="x" value="-50 + 450 * clamp(fract(((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) + 4) / 45) * 45 / 22, 0, 1)"/>
-        <Transform target="y" value="250 - 200 * sin(3.1416 * clamp(fract(((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) + 4) / 45) * 45 / 22, 0, 1))"/>
-        <Transform target="alpha" value="255 * (1 - (clamp(((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 18) / 4, 0, 1) - clamp(((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 41) / 4, 0, 1)))"/>
+      <PartImage x="0" y="0" width="100" height="100" name="sun">
+        <Transform target="x" value="175 - 182 * cos(3.1416 * [REFERENCE.P])"/>
+        <Transform target="y" value="182 - 182 * sin(3.1416 * [REFERENCE.P])"/>
+        <Transform target="alpha" value="255 * [REFERENCE.D]"/>
         <Image resource="sun"/>
       </PartImage>
+      <PartImage x="0" y="0" width="56" height="56" name="moon">
+        <Transform target="x" value="197 - 182 * cos(3.1416 * [REFERENCE.PN])"/>
+        <Transform target="y" value="204 - 182 * sin(3.1416 * [REFERENCE.PN])"/>
+        <Transform target="alpha" value="240 * (1 - [REFERENCE.D])"/>
+        <Image resource="moon"/>
+      </PartImage>
       <PartImage x="0" y="60" width="110" height="44">
-        <Transform target="x" value="-120 + 690 * fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) / 22.5)"/>
-        <Transform target="alpha" value="240 * (1 - (clamp(((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 18) / 4, 0, 1) - clamp(((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 41) / 4, 0, 1)))"/>
+        <Transform target="x" value="-120 + 690 * fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 22.5)"/>
+        <Transform target="alpha" value="240 * (1 - (1 - [REFERENCE.D]))"/>
         <Image resource="cloud1"/>
       </PartImage>
       <PartImage x="0" y="135" width="80" height="34">
-        <Transform target="x" value="-90 + 630 * fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) / 15 + 0.5)"/>
-        <Transform target="alpha" value="240 * (1 - (clamp(((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 18) / 4, 0, 1) - clamp(((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 41) / 4, 0, 1)))"/>
+        <Transform target="x" value="-90 + 630 * fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 15 + 0.5)"/>
+        <Transform target="alpha" value="240 * (1 - (1 - [REFERENCE.D]))"/>
         <Image resource="cloud2"/>
       </PartImage>
       <PartImage x="0" y="0" width="160" height="90">
-        <Transform target="x" value="-160 + 620 * clamp(((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 23) / 8, 0, 1)"/>
-        <Transform target="y" value="250 - 230 * clamp(((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 23) / 8, 0, 1)"/>
-        <Transform target="alpha" value="((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &gt; 23 &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 31) ? 255 : 0"/>
+        <Transform target="x" value="-160 + 620 * clamp(([REFERENCE.TP] - 23) / 8, 0, 1)"/>
+        <Transform target="y" value="250 - 230 * clamp(([REFERENCE.TP] - 23) / 8, 0, 1)"/>
+        <Transform target="alpha" value="([REFERENCE.TP] &gt; 23 &amp;&amp; [REFERENCE.TP] &lt; 31) ? 255 : 0"/>
         <Image resource="rocket"/>
       </PartImage>
       <PartImage x="109" y="0" width="12" height="12">
-        <Transform target="y" value="270 - (270 - 79) * clamp(((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 2) / 0.7, 0, 1)"/>
-        <Transform target="alpha" value="([STEP_PERCENT] &gt;= 100 &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &gt;= 2 &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 2.7) ? 255 : 0"/>
+        <Transform target="y" value="270 - (270 - 79) * clamp(([REFERENCE.TP] - 2) / 0.7, 0, 1)"/>
+        <Transform target="alpha" value="([STEP_PERCENT] &gt;= 100 &amp;&amp; [REFERENCE.TP] &gt;= 2 &amp;&amp; [REFERENCE.TP] &lt; 2.7) ? 255 : 0"/>
         <Image resource="spark"/>
       </PartImage>
       <PartImage x="70" y="40" width="90" height="90">
-        <Transform target="alpha" value="([STEP_PERCENT] &gt;= 100 &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &gt;= 2.7 &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 2.95) ? 255 : 0"/>
+        <Transform target="alpha" value="([STEP_PERCENT] &gt;= 100 &amp;&amp; [REFERENCE.TP] &gt;= 2.7 &amp;&amp; [REFERENCE.TP] &lt; 2.95) ? 255 : 0"/>
         <Image resource="fwA_1"/>
       </PartImage>
       <PartImage x="70" y="40" width="90" height="90">
-        <Transform target="alpha" value="([STEP_PERCENT] &gt;= 100 &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &gt;= 2.95 &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 3.3) ? 255 : 0"/>
+        <Transform target="alpha" value="([STEP_PERCENT] &gt;= 100 &amp;&amp; [REFERENCE.TP] &gt;= 2.95 &amp;&amp; [REFERENCE.TP] &lt; 3.3) ? 255 : 0"/>
         <Image resource="fwA_2"/>
       </PartImage>
       <PartImage x="70" y="40" width="90" height="90">
-        <Transform target="alpha" value="([STEP_PERCENT] &gt;= 100 &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &gt;= 3.3 &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 4.0) ? 255 * (1 - ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 3.3) / 0.7) : 0"/>
+        <Transform target="alpha" value="([STEP_PERCENT] &gt;= 100 &amp;&amp; [REFERENCE.TP] &gt;= 3.3 &amp;&amp; [REFERENCE.TP] &lt; 4.0) ? 255 * (1 - ([REFERENCE.TP] - 3.3) / 0.7) : 0"/>
         <Image resource="fwA_3"/>
       </PartImage>
       <PartImage x="289" y="0" width="12" height="12">
-        <Transform target="y" value="270 - (270 - 59) * clamp(((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 17) / 0.7, 0, 1)"/>
-        <Transform target="alpha" value="([STEP_PERCENT] &gt;= 100 &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &gt;= 17 &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 17.7) ? 255 : 0"/>
+        <Transform target="y" value="270 - (270 - 59) * clamp(([REFERENCE.TP] - 17) / 0.7, 0, 1)"/>
+        <Transform target="alpha" value="([STEP_PERCENT] &gt;= 100 &amp;&amp; [REFERENCE.TP] &gt;= 17 &amp;&amp; [REFERENCE.TP] &lt; 17.7) ? 255 : 0"/>
         <Image resource="spark"/>
       </PartImage>
       <PartImage x="250" y="20" width="90" height="90">
-        <Transform target="alpha" value="([STEP_PERCENT] &gt;= 100 &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &gt;= 17.7 &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 17.95) ? 255 : 0"/>
+        <Transform target="alpha" value="([STEP_PERCENT] &gt;= 100 &amp;&amp; [REFERENCE.TP] &gt;= 17.7 &amp;&amp; [REFERENCE.TP] &lt; 17.95) ? 255 : 0"/>
         <Image resource="fwB_1"/>
       </PartImage>
       <PartImage x="250" y="20" width="90" height="90">
-        <Transform target="alpha" value="([STEP_PERCENT] &gt;= 100 &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &gt;= 17.95 &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 18.3) ? 255 : 0"/>
+        <Transform target="alpha" value="([STEP_PERCENT] &gt;= 100 &amp;&amp; [REFERENCE.TP] &gt;= 17.95 &amp;&amp; [REFERENCE.TP] &lt; 18.3) ? 255 : 0"/>
         <Image resource="fwB_2"/>
       </PartImage>
       <PartImage x="250" y="20" width="90" height="90">
-        <Transform target="alpha" value="([STEP_PERCENT] &gt;= 100 &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &gt;= 18.3 &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 19.0) ? 255 * (1 - ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 18.3) / 0.7) : 0"/>
+        <Transform target="alpha" value="([STEP_PERCENT] &gt;= 100 &amp;&amp; [REFERENCE.TP] &gt;= 18.3 &amp;&amp; [REFERENCE.TP] &lt; 19.0) ? 255 * (1 - ([REFERENCE.TP] - 18.3) / 0.7) : 0"/>
         <Image resource="fwB_3"/>
       </PartImage>
       <PartImage x="189" y="0" width="12" height="12">
-        <Transform target="y" value="270 - (270 - 129) * clamp(((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 32) / 0.7, 0, 1)"/>
-        <Transform target="alpha" value="([STEP_PERCENT] &gt;= 100 &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &gt;= 32 &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 32.7) ? 255 : 0"/>
+        <Transform target="y" value="270 - (270 - 129) * clamp(([REFERENCE.TP] - 32) / 0.7, 0, 1)"/>
+        <Transform target="alpha" value="([STEP_PERCENT] &gt;= 100 &amp;&amp; [REFERENCE.TP] &gt;= 32 &amp;&amp; [REFERENCE.TP] &lt; 32.7) ? 255 : 0"/>
         <Image resource="spark"/>
       </PartImage>
       <PartImage x="150" y="90" width="90" height="90">
-        <Transform target="alpha" value="([STEP_PERCENT] &gt;= 100 &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &gt;= 32.7 &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 32.95) ? 255 : 0"/>
+        <Transform target="alpha" value="([STEP_PERCENT] &gt;= 100 &amp;&amp; [REFERENCE.TP] &gt;= 32.7 &amp;&amp; [REFERENCE.TP] &lt; 32.95) ? 255 : 0"/>
         <Image resource="fwC_1"/>
       </PartImage>
       <PartImage x="150" y="90" width="90" height="90">
-        <Transform target="alpha" value="([STEP_PERCENT] &gt;= 100 &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &gt;= 32.95 &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 33.3) ? 255 : 0"/>
+        <Transform target="alpha" value="([STEP_PERCENT] &gt;= 100 &amp;&amp; [REFERENCE.TP] &gt;= 32.95 &amp;&amp; [REFERENCE.TP] &lt; 33.3) ? 255 : 0"/>
         <Image resource="fwC_2"/>
       </PartImage>
       <PartImage x="150" y="90" width="90" height="90">
-        <Transform target="alpha" value="([STEP_PERCENT] &gt;= 100 &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &gt;= 33.3 &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 34.0) ? 255 * (1 - ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 33.3) / 0.7) : 0"/>
+        <Transform target="alpha" value="([STEP_PERCENT] &gt;= 100 &amp;&amp; [REFERENCE.TP] &gt;= 33.3 &amp;&amp; [REFERENCE.TP] &lt; 34.0) ? 255 * (1 - ([REFERENCE.TP] - 33.3) / 0.7) : 0"/>
         <Image resource="fwC_3"/>
+      </PartImage>
+      <PartImage x="0" y="0" width="900" height="190" name="storm">
+        <Transform target="x" value="-450 * fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / ([REFERENCE.WINDY] ? 10 : 34))"/>
+        <Transform target="alpha" value="255 * clamp(([REFERENCE.CL] - 0.3) / 0.7, 0, 1) * (1 - 0.55 * (1 - [REFERENCE.D]))"/>
+        <Image resource="storm"/>
+      </PartImage>
+      <PartImage x="0" y="0" width="450" height="450" name="overcastDay">
+        <Transform target="alpha" value="215 * [REFERENCE.CL] * [REFERENCE.D]"/>
+        <Image resource="overcast_day"/>
+      </PartImage>
+      <PartImage x="0" y="0" width="450" height="450" name="overcastNight">
+        <Transform target="alpha" value="235 * [REFERENCE.CL] * (1 - [REFERENCE.D])"/>
+        <Image resource="overcast_night"/>
       </PartImage>
       <PartImage x="0" y="0" width="450" height="450">
         <Image resource="back"/>
       </PartImage>
+      <PartImage x="0" y="0" width="450" height="450">
+        <Transform target="alpha" value="255 * [REFERENCE.SUM]"/>
+        <Image resource="back_summer"/>
+      </PartImage>
       <PartImage x="0" y="320" width="900" height="30">
-        <Transform target="x" value="-450 * fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) / 15)"/>
+        <Transform target="x" value="-450 * fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 15)"/>
         <Image resource="ripples"/>
       </PartImage>
       <PartImage x="0" y="0" width="450" height="450">
         <Image resource="front"/>
       </PartImage>
+      <PartImage x="0" y="0" width="450" height="450">
+        <Transform target="alpha" value="255 * [REFERENCE.AUT]"/>
+        <Image resource="front_autumn"/>
+      </PartImage>
+      <PartImage x="0" y="0" width="450" height="450">
+        <Transform target="alpha" value="255 * [REFERENCE.WIN]"/>
+        <Image resource="front_winter"/>
+      </PartImage>
+      <PartImage x="0" y="0" width="450" height="450">
+        <Transform target="alpha" value="255 * [REFERENCE.SPR]"/>
+        <Image resource="front_spring"/>
+      </PartImage>
       <PartImage x="238" y="350" width="36" height="30">
-        <Transform target="alpha" value="((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 11.8) ? 255 : 0"/>
+        <Transform target="alpha" value="([REFERENCE.TP] &lt; 11.8) ? 255 : 0"/>
         <Image resource="pile_small"/>
       </PartImage>
       <PartImage x="238" y="350" width="36" height="30">
-        <Transform target="alpha" value="((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &gt;= 11.8) ? 255 : 0"/>
+        <Transform target="alpha" value="([REFERENCE.TP] &gt;= 11.8) ? 255 : 0"/>
         <Image resource="pile_big"/>
       </PartImage>
       <PartImage x="360" y="310" width="50" height="72">
-        <Transform target="x" value="360 + (((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &gt;= 3 &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 7) ? 1.5 * sin((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) * 25) : 0)"/>
+        <Transform target="x" value="360 + (([REFERENCE.TP] &gt;= 3 &amp;&amp; [REFERENCE.TP] &lt; 7) ? 1.5 * sin([REFERENCE.TP] * 25) : 0)"/>
         <Image resource="tree"/>
       </PartImage>
+      <PartImage x="360" y="310" width="50" height="72">
+        <Transform target="alpha" value="255 * [REFERENCE.AUT]"/>
+        <Transform target="x" value="360 + (([REFERENCE.TP] &gt;= 3 &amp;&amp; [REFERENCE.TP] &lt; 7) ? 1.5 * sin([REFERENCE.TP] * 25) : 0)"/>
+        <Image resource="tree_autumn"/>
+      </PartImage>
+      <PartImage x="360" y="310" width="50" height="72">
+        <Transform target="alpha" value="255 * [REFERENCE.WIN]"/>
+        <Transform target="x" value="360 + (([REFERENCE.TP] &gt;= 3 &amp;&amp; [REFERENCE.TP] &lt; 7) ? 1.5 * sin([REFERENCE.TP] * 25) : 0)"/>
+        <Image resource="tree_winter"/>
+      </PartImage>
       <PartImage x="304" y="346" width="16" height="25">
-        <Transform target="alpha" value="(!(((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &gt;= 0 &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 1.2) || ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &gt;= 14.5 &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 15.6))) ? 255 : 0"/>
+        <Transform target="alpha" value="(!(([REFERENCE.TP] &gt;= 0 &amp;&amp; [REFERENCE.TP] &lt; 1.2) || ([REFERENCE.TP] &gt;= 14.5 &amp;&amp; [REFERENCE.TP] &lt; 15.6))) ? 255 : 0"/>
         <Image resource="door_closed"/>
       </PartImage>
       <PartImage x="304" y="346" width="16" height="25">
-        <Transform target="alpha" value="(((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &gt;= 0 &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 1.2) || ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &gt;= 14.5 &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 15.6)) ? 255 : 0"/>
+        <Transform target="alpha" value="(([REFERENCE.TP] &gt;= 0 &amp;&amp; [REFERENCE.TP] &lt; 1.2) || ([REFERENCE.TP] &gt;= 14.5 &amp;&amp; [REFERENCE.TP] &lt; 15.6)) ? 255 : 0"/>
         <Image resource="door_open"/>
       </PartImage>
       <PartImage x="0" y="330" width="36" height="46">
-        <Transform target="x" value="((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 1 ? 294 : ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 3 ? 294 + 51 * ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 1) / 2 : ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 8 ? 345 : ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 11 ? 345 - 89 * ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 8) / 3 : ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 12.4 ? 256 : ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 14.5 ? 256 + 38 * ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 12.4) / 2.1 : 294))))))"/>
-        <Transform target="alpha" value="((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &gt;= 0.3 &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 15.2 &amp;&amp; ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 3 || (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &gt;= 12.4) &amp;&amp; fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) * 4) &lt; 0.5) ? 255 : 0"/>
+        <Transform target="x" value="([REFERENCE.TP] &lt; 1 ? 294 : ([REFERENCE.TP] &lt; 3 ? 294 + 51 * ([REFERENCE.TP] - 1) / 2 : ([REFERENCE.TP] &lt; 8 ? 345 : ([REFERENCE.TP] &lt; 11 ? 345 - 89 * ([REFERENCE.TP] - 8) / 3 : ([REFERENCE.TP] &lt; 12.4 ? 256 : ([REFERENCE.TP] &lt; 14.5 ? 256 + 38 * ([REFERENCE.TP] - 12.4) / 2.1 : 294))))))"/>
+        <Transform target="alpha" value="([REFERENCE.TP] &gt;= 0.3 &amp;&amp; [REFERENCE.TP] &lt; 15.2 &amp;&amp; ([REFERENCE.TP] &lt; 3 || [REFERENCE.TP] &gt;= 12.4) &amp;&amp; fract([REFERENCE.TP] * 4) &lt; 0.5) ? 255 : 0"/>
         <Image resource="boy_walk1_r"/>
       </PartImage>
       <PartImage x="0" y="330" width="36" height="46">
-        <Transform target="x" value="((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 1 ? 294 : ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 3 ? 294 + 51 * ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 1) / 2 : ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 8 ? 345 : ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 11 ? 345 - 89 * ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 8) / 3 : ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 12.4 ? 256 : ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 14.5 ? 256 + 38 * ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 12.4) / 2.1 : 294))))))"/>
-        <Transform target="alpha" value="((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &gt;= 0.3 &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 15.2 &amp;&amp; ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 3 || (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &gt;= 12.4) &amp;&amp; !(fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) * 4) &lt; 0.5)) ? 255 : 0"/>
+        <Transform target="x" value="([REFERENCE.TP] &lt; 1 ? 294 : ([REFERENCE.TP] &lt; 3 ? 294 + 51 * ([REFERENCE.TP] - 1) / 2 : ([REFERENCE.TP] &lt; 8 ? 345 : ([REFERENCE.TP] &lt; 11 ? 345 - 89 * ([REFERENCE.TP] - 8) / 3 : ([REFERENCE.TP] &lt; 12.4 ? 256 : ([REFERENCE.TP] &lt; 14.5 ? 256 + 38 * ([REFERENCE.TP] - 12.4) / 2.1 : 294))))))"/>
+        <Transform target="alpha" value="([REFERENCE.TP] &gt;= 0.3 &amp;&amp; [REFERENCE.TP] &lt; 15.2 &amp;&amp; ([REFERENCE.TP] &lt; 3 || [REFERENCE.TP] &gt;= 12.4) &amp;&amp; !(fract([REFERENCE.TP] * 4) &lt; 0.5)) ? 255 : 0"/>
         <Image resource="boy_walk2_r"/>
       </PartImage>
       <PartImage x="0" y="330" width="36" height="46">
-        <Transform target="x" value="((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 1 ? 294 : ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 3 ? 294 + 51 * ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 1) / 2 : ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 8 ? 345 : ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 11 ? 345 - 89 * ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 8) / 3 : ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 12.4 ? 256 : ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 14.5 ? 256 + 38 * ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 12.4) / 2.1 : 294))))))"/>
-        <Transform target="alpha" value="((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &gt;= 3 &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 7 &amp;&amp; fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) * 2) &lt; 0.5) ? 255 : 0"/>
+        <Transform target="x" value="([REFERENCE.TP] &lt; 1 ? 294 : ([REFERENCE.TP] &lt; 3 ? 294 + 51 * ([REFERENCE.TP] - 1) / 2 : ([REFERENCE.TP] &lt; 8 ? 345 : ([REFERENCE.TP] &lt; 11 ? 345 - 89 * ([REFERENCE.TP] - 8) / 3 : ([REFERENCE.TP] &lt; 12.4 ? 256 : ([REFERENCE.TP] &lt; 14.5 ? 256 + 38 * ([REFERENCE.TP] - 12.4) / 2.1 : 294))))))"/>
+        <Transform target="alpha" value="([REFERENCE.TP] &gt;= 3 &amp;&amp; [REFERENCE.TP] &lt; 7 &amp;&amp; fract([REFERENCE.TP] * 2) &lt; 0.5) ? 255 : 0"/>
         <Image resource="boy_chop_up_r"/>
       </PartImage>
       <PartImage x="0" y="330" width="36" height="46">
-        <Transform target="x" value="((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 1 ? 294 : ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 3 ? 294 + 51 * ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 1) / 2 : ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 8 ? 345 : ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 11 ? 345 - 89 * ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 8) / 3 : ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 12.4 ? 256 : ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 14.5 ? 256 + 38 * ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 12.4) / 2.1 : 294))))))"/>
-        <Transform target="alpha" value="((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &gt;= 3 &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 7 &amp;&amp; !(fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) * 2) &lt; 0.5)) ? 255 : 0"/>
+        <Transform target="x" value="([REFERENCE.TP] &lt; 1 ? 294 : ([REFERENCE.TP] &lt; 3 ? 294 + 51 * ([REFERENCE.TP] - 1) / 2 : ([REFERENCE.TP] &lt; 8 ? 345 : ([REFERENCE.TP] &lt; 11 ? 345 - 89 * ([REFERENCE.TP] - 8) / 3 : ([REFERENCE.TP] &lt; 12.4 ? 256 : ([REFERENCE.TP] &lt; 14.5 ? 256 + 38 * ([REFERENCE.TP] - 12.4) / 2.1 : 294))))))"/>
+        <Transform target="alpha" value="([REFERENCE.TP] &gt;= 3 &amp;&amp; [REFERENCE.TP] &lt; 7 &amp;&amp; !(fract([REFERENCE.TP] * 2) &lt; 0.5)) ? 255 : 0"/>
         <Image resource="boy_chop_down_r"/>
       </PartImage>
       <PartImage x="0" y="330" width="36" height="46">
-        <Transform target="x" value="((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 1 ? 294 : ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 3 ? 294 + 51 * ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 1) / 2 : ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 8 ? 345 : ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 11 ? 345 - 89 * ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 8) / 3 : ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 12.4 ? 256 : ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 14.5 ? 256 + 38 * ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 12.4) / 2.1 : 294))))))"/>
-        <Transform target="alpha" value="((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &gt;= 7 &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 8) ? 255 : 0"/>
+        <Transform target="x" value="([REFERENCE.TP] &lt; 1 ? 294 : ([REFERENCE.TP] &lt; 3 ? 294 + 51 * ([REFERENCE.TP] - 1) / 2 : ([REFERENCE.TP] &lt; 8 ? 345 : ([REFERENCE.TP] &lt; 11 ? 345 - 89 * ([REFERENCE.TP] - 8) / 3 : ([REFERENCE.TP] &lt; 12.4 ? 256 : ([REFERENCE.TP] &lt; 14.5 ? 256 + 38 * ([REFERENCE.TP] - 12.4) / 2.1 : 294))))))"/>
+        <Transform target="alpha" value="([REFERENCE.TP] &gt;= 7 &amp;&amp; [REFERENCE.TP] &lt; 8) ? 255 : 0"/>
         <Image resource="boy_bend_r"/>
       </PartImage>
       <PartImage x="0" y="330" width="36" height="46">
-        <Transform target="x" value="((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 1 ? 294 : ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 3 ? 294 + 51 * ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 1) / 2 : ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 8 ? 345 : ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 11 ? 345 - 89 * ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 8) / 3 : ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 12.4 ? 256 : ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 14.5 ? 256 + 38 * ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 12.4) / 2.1 : 294))))))"/>
-        <Transform target="alpha" value="((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &gt;= 8 &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 11 &amp;&amp; fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) * 4) &lt; 0.5) ? 255 : 0"/>
+        <Transform target="x" value="([REFERENCE.TP] &lt; 1 ? 294 : ([REFERENCE.TP] &lt; 3 ? 294 + 51 * ([REFERENCE.TP] - 1) / 2 : ([REFERENCE.TP] &lt; 8 ? 345 : ([REFERENCE.TP] &lt; 11 ? 345 - 89 * ([REFERENCE.TP] - 8) / 3 : ([REFERENCE.TP] &lt; 12.4 ? 256 : ([REFERENCE.TP] &lt; 14.5 ? 256 + 38 * ([REFERENCE.TP] - 12.4) / 2.1 : 294))))))"/>
+        <Transform target="alpha" value="([REFERENCE.TP] &gt;= 8 &amp;&amp; [REFERENCE.TP] &lt; 11 &amp;&amp; fract([REFERENCE.TP] * 4) &lt; 0.5) ? 255 : 0"/>
         <Image resource="boy_carry1_l"/>
       </PartImage>
       <PartImage x="0" y="330" width="36" height="46">
-        <Transform target="x" value="((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 1 ? 294 : ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 3 ? 294 + 51 * ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 1) / 2 : ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 8 ? 345 : ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 11 ? 345 - 89 * ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 8) / 3 : ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 12.4 ? 256 : ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 14.5 ? 256 + 38 * ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 12.4) / 2.1 : 294))))))"/>
-        <Transform target="alpha" value="((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &gt;= 8 &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 11 &amp;&amp; !(fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) * 4) &lt; 0.5)) ? 255 : 0"/>
+        <Transform target="x" value="([REFERENCE.TP] &lt; 1 ? 294 : ([REFERENCE.TP] &lt; 3 ? 294 + 51 * ([REFERENCE.TP] - 1) / 2 : ([REFERENCE.TP] &lt; 8 ? 345 : ([REFERENCE.TP] &lt; 11 ? 345 - 89 * ([REFERENCE.TP] - 8) / 3 : ([REFERENCE.TP] &lt; 12.4 ? 256 : ([REFERENCE.TP] &lt; 14.5 ? 256 + 38 * ([REFERENCE.TP] - 12.4) / 2.1 : 294))))))"/>
+        <Transform target="alpha" value="([REFERENCE.TP] &gt;= 8 &amp;&amp; [REFERENCE.TP] &lt; 11 &amp;&amp; !(fract([REFERENCE.TP] * 4) &lt; 0.5)) ? 255 : 0"/>
         <Image resource="boy_carry2_l"/>
       </PartImage>
       <PartImage x="0" y="330" width="36" height="46">
-        <Transform target="x" value="((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 1 ? 294 : ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 3 ? 294 + 51 * ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 1) / 2 : ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 8 ? 345 : ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 11 ? 345 - 89 * ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 8) / 3 : ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 12.4 ? 256 : ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 14.5 ? 256 + 38 * ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 12.4) / 2.1 : 294))))))"/>
-        <Transform target="alpha" value="((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &gt;= 11 &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 12.4) ? 255 : 0"/>
+        <Transform target="x" value="([REFERENCE.TP] &lt; 1 ? 294 : ([REFERENCE.TP] &lt; 3 ? 294 + 51 * ([REFERENCE.TP] - 1) / 2 : ([REFERENCE.TP] &lt; 8 ? 345 : ([REFERENCE.TP] &lt; 11 ? 345 - 89 * ([REFERENCE.TP] - 8) / 3 : ([REFERENCE.TP] &lt; 12.4 ? 256 : ([REFERENCE.TP] &lt; 14.5 ? 256 + 38 * ([REFERENCE.TP] - 12.4) / 2.1 : 294))))))"/>
+        <Transform target="alpha" value="([REFERENCE.TP] &gt;= 11 &amp;&amp; [REFERENCE.TP] &lt; 12.4) ? 255 : 0"/>
         <Image resource="boy_bend_l"/>
       </PartImage>
       <PartImage x="270" y="372" width="52" height="40">
-        <Transform target="x" value="270 + 3 * sin((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) * 0.6981 + 0)"/>
-        <Transform target="alpha" value="(!(sin((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) * 1.3963 + 0) &gt; 0.3)) ? 255 : 0"/>
+        <Transform target="x" value="270 + 3 * sin(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) * 0.6981 + 0)"/>
+        <Transform target="alpha" value="(!(sin(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) * 1.3963 + 0) &gt; 0.3)) ? 255 : 0"/>
         <Image resource="sheep_r"/>
       </PartImage>
       <PartImage x="270" y="372" width="52" height="40">
-        <Transform target="x" value="270 + 3 * sin((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) * 0.6981 + 0)"/>
-        <Transform target="alpha" value="(sin((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) * 1.3963 + 0) &gt; 0.3) ? 255 : 0"/>
+        <Transform target="x" value="270 + 3 * sin(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) * 0.6981 + 0)"/>
+        <Transform target="alpha" value="(sin(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) * 1.3963 + 0) &gt; 0.3) ? 255 : 0"/>
         <Image resource="sheep_r_eat"/>
       </PartImage>
       <PartImage x="318" y="378" width="52" height="40">
-        <Transform target="x" value="318 + 3 * sin((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) * 0.6981 + 2)"/>
-        <Transform target="alpha" value="(!(sin((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) * 1.3963 + 2) &gt; 0.3)) ? 255 : 0"/>
+        <Transform target="x" value="318 + 3 * sin(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) * 0.6981 + 2)"/>
+        <Transform target="alpha" value="(!(sin(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) * 1.3963 + 2) &gt; 0.3)) ? 255 : 0"/>
         <Image resource="sheep_l"/>
       </PartImage>
       <PartImage x="318" y="378" width="52" height="40">
-        <Transform target="x" value="318 + 3 * sin((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) * 0.6981 + 2)"/>
-        <Transform target="alpha" value="(sin((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) * 1.3963 + 2) &gt; 0.3) ? 255 : 0"/>
+        <Transform target="x" value="318 + 3 * sin(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) * 0.6981 + 2)"/>
+        <Transform target="alpha" value="(sin(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) * 1.3963 + 2) &gt; 0.3) ? 255 : 0"/>
         <Image resource="sheep_l_eat"/>
       </PartImage>
       <PartImage x="362" y="370" width="52" height="40">
-        <Transform target="x" value="362 + 3 * sin((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) * 0.6981 + 4)"/>
-        <Transform target="alpha" value="(!(sin((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) * 1.3963 + 4) &gt; 0.3)) ? 255 : 0"/>
+        <Transform target="x" value="362 + 3 * sin(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) * 0.6981 + 4)"/>
+        <Transform target="alpha" value="(!(sin(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) * 1.3963 + 4) &gt; 0.3)) ? 255 : 0"/>
         <Image resource="sheep_l"/>
       </PartImage>
       <PartImage x="362" y="370" width="52" height="40">
-        <Transform target="x" value="362 + 3 * sin((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) * 0.6981 + 4)"/>
-        <Transform target="alpha" value="(sin((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) * 1.3963 + 4) &gt; 0.3) ? 255 : 0"/>
+        <Transform target="x" value="362 + 3 * sin(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) * 0.6981 + 4)"/>
+        <Transform target="alpha" value="(sin(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) * 1.3963 + 4) &gt; 0.3) ? 255 : 0"/>
         <Image resource="sheep_l_eat"/>
       </PartImage>
       <PartImage x="0" y="0" width="450" height="450">
         <Image resource="fence"/>
       </PartImage>
       <PartImage x="236" y="386" width="27" height="28">
-        <Transform target="alpha" value="(!((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &gt;= 23 &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 27.5)) ? 255 : 0"/>
+        <Transform target="alpha" value="(!([REFERENCE.TP] &gt;= 23 &amp;&amp; [REFERENCE.TP] &lt; 27.5)) ? 255 : 0"/>
         <Image resource="gate_closed"/>
       </PartImage>
       <PartImage x="236" y="386" width="7" height="28">
-        <Transform target="alpha" value="((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &gt;= 23 &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 27.5) ? 255 : 0"/>
+        <Transform target="alpha" value="([REFERENCE.TP] &gt;= 23 &amp;&amp; [REFERENCE.TP] &lt; 27.5) ? 255 : 0"/>
         <Image resource="gate_open"/>
       </PartImage>
       <PartImage x="0" y="0" width="450" height="450">
-        <Transform target="alpha" value="255 * (clamp(((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 18) / 4, 0, 1) - clamp(((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 41) / 4, 0, 1))"/>
+        <Transform target="alpha" value="255 * (1 - [REFERENCE.D])"/>
         <Image resource="night_overlay"/>
       </PartImage>
       <PartImage x="0" y="0" width="450" height="450">
-        <Transform target="alpha" value="255 * (clamp(((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 18) / 4, 0, 1) - clamp(((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 41) / 4, 0, 1)) * ([BATTERY_PERCENT] &lt;= 20 ? 0.45 : 1)"/>
+        <Transform target="alpha" value="255 * [REFERENCE.LON] * (1 - [REFERENCE.D]) * ([BATTERY_PERCENT] &lt;= 20 ? 0.45 : 1)"/>
         <Image resource="lights"/>
       </PartImage>
       <PartImage x="0" y="0" width="52" height="40">
-        <Transform target="x" value="(fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 27 ? 232 - 77 * ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 23.5) / 3.5 : 155"/>
-        <Transform target="y" value="(fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 27 ? 380 - 3 * abs(sin((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) * 9)) : 380"/>
-        <Transform target="alpha" value="((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &gt;= 23.5 &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 37.3 &amp;&amp; ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 27 || fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45)) &lt; 0.5)) ? 255 : 0"/>
+        <Transform target="x" value="[REFERENCE.TP] &lt; 27 ? 232 - 77 * ([REFERENCE.TP] - 23.5) / 3.5 : 155"/>
+        <Transform target="y" value="[REFERENCE.TP] &lt; 27 ? 380 - 3 * abs(sin([REFERENCE.TP] * 9)) : 380"/>
+        <Transform target="alpha" value="([REFERENCE.TP] &gt;= 23.5 &amp;&amp; [REFERENCE.TP] &lt; 37.3 &amp;&amp; ([REFERENCE.TP] &lt; 27 || fract([REFERENCE.TP]) &lt; 0.5)) ? 255 : 0"/>
         <Image resource="sheep_l"/>
       </PartImage>
       <PartImage x="0" y="0" width="52" height="40">
-        <Transform target="x" value="(fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 27 ? 232 - 77 * ((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 23.5) / 3.5 : 155"/>
-        <Transform target="y" value="(fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 27 ? 380 - 3 * abs(sin((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) * 9)) : 380"/>
-        <Transform target="alpha" value="((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &gt;= 23.5 &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 37.3 &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &gt;= 27 &amp;&amp; fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45)) &gt;= 0.5) ? 255 : 0"/>
+        <Transform target="x" value="[REFERENCE.TP] &lt; 27 ? 232 - 77 * ([REFERENCE.TP] - 23.5) / 3.5 : 155"/>
+        <Transform target="y" value="[REFERENCE.TP] &lt; 27 ? 380 - 3 * abs(sin([REFERENCE.TP] * 9)) : 380"/>
+        <Transform target="alpha" value="([REFERENCE.TP] &gt;= 23.5 &amp;&amp; [REFERENCE.TP] &lt; 37.3 &amp;&amp; [REFERENCE.TP] &gt;= 27 &amp;&amp; fract([REFERENCE.TP]) &gt;= 0.5) ? 255 : 0"/>
         <Image resource="sheep_l_eat"/>
       </PartImage>
       <PartImage x="58" y="360" width="70" height="42">
-        <Transform target="alpha" value="((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 34 || (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &gt;= 42) ? 255 : 0"/>
+        <Transform target="alpha" value="([REFERENCE.TP] &lt; 34 || [REFERENCE.TP] &gt;= 42) ? 255 : 0"/>
         <Image resource="wolf_stand"/>
       </PartImage>
       <PartImage x="0" y="360" width="70" height="42">
-        <Transform target="x" value="58 + 40 * clamp(((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 34) / 2, 0, 1)"/>
-        <Transform target="y" value="360 - 2 * abs(sin((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) * 9))"/>
-        <Transform target="alpha" value="((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &gt;= 34 &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 36 &amp;&amp; fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) * 3) &lt; 0.5) ? 255 : 0"/>
+        <Transform target="x" value="58 + 40 * clamp(([REFERENCE.TP] - 34) / 2, 0, 1)"/>
+        <Transform target="y" value="360 - 2 * abs(sin(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) * 9))"/>
+        <Transform target="alpha" value="([REFERENCE.TP] &gt;= 34 &amp;&amp; [REFERENCE.TP] &lt; 36 &amp;&amp; fract([REFERENCE.TP] * 3) &lt; 0.5) ? 255 : 0"/>
         <Image resource="wolf_walk"/>
       </PartImage>
       <PartImage x="0" y="360" width="70" height="42">
-        <Transform target="x" value="58 + 40 * clamp(((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 34) / 2, 0, 1)"/>
-        <Transform target="alpha" value="((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &gt;= 34 &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 36 &amp;&amp; fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) * 3) &gt;= 0.5) ? 255 : 0"/>
+        <Transform target="x" value="58 + 40 * clamp(([REFERENCE.TP] - 34) / 2, 0, 1)"/>
+        <Transform target="alpha" value="([REFERENCE.TP] &gt;= 34 &amp;&amp; [REFERENCE.TP] &lt; 36 &amp;&amp; fract([REFERENCE.TP] * 3) &gt;= 0.5) ? 255 : 0"/>
         <Image resource="wolf_stand"/>
       </PartImage>
       <PartImage x="0" y="0" width="70" height="42">
-        <Transform target="x" value="98 + 30 * clamp(((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 36) / 1.3, 0, 1)"/>
-        <Transform target="y" value="362 - 34 * sin(3.1416 * clamp(((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 36) / 1.3, 0, 1))"/>
-        <Transform target="alpha" value="((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &gt;= 36 &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 37.3) ? 255 : 0"/>
+        <Transform target="x" value="98 + 30 * clamp(([REFERENCE.TP] - 36) / 1.3, 0, 1)"/>
+        <Transform target="y" value="362 - 34 * sin(3.1416 * clamp(([REFERENCE.TP] - 36) / 1.3, 0, 1))"/>
+        <Transform target="alpha" value="([REFERENCE.TP] &gt;= 36 &amp;&amp; [REFERENCE.TP] &lt; 37.3) ? 255 : 0"/>
         <Image resource="wolf_jump"/>
       </PartImage>
       <PartImage x="0" y="362" width="96" height="42">
-        <Transform target="x" value="112 - 240 * clamp(((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 37.3) / 3, 0, 1)"/>
-        <Transform target="y" value="362 - 2 * abs(sin((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) * 12))"/>
-        <Transform target="alpha" value="((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &gt;= 37.3 &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 41) ? 255 : 0"/>
+        <Transform target="x" value="112 - 240 * clamp(([REFERENCE.TP] - 37.3) / 3, 0, 1)"/>
+        <Transform target="y" value="362 - 2 * abs(sin(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) * 12))"/>
+        <Transform target="alpha" value="([REFERENCE.TP] &gt;= 37.3 &amp;&amp; [REFERENCE.TP] &lt; 41) ? 255 : 0"/>
         <Image resource="wolf_carry"/>
       </PartImage>
       <PartImage x="0" y="0" width="450" height="450">
         <Image resource="bush"/>
       </PartImage>
       <PartImage x="0" y="0" width="450" height="450">
-        <Transform target="alpha" value="255 * (clamp(((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 18) / 4, 0, 1) - clamp(((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) - 41) / 4, 0, 1))"/>
+        <Transform target="alpha" value="255 * [REFERENCE.AUT]"/>
+        <Image resource="bush_autumn"/>
+      </PartImage>
+      <PartImage x="0" y="0" width="450" height="450">
+        <Transform target="alpha" value="255 * [REFERENCE.WIN]"/>
+        <Image resource="bush_winter"/>
+      </PartImage>
+      <PartImage x="0" y="0" width="450" height="450">
+        <Transform target="alpha" value="255 * [REFERENCE.SPR]"/>
+        <Image resource="bush_spring"/>
+      </PartImage>
+      <PartImage x="0" y="0" width="450" height="450">
+        <Transform target="alpha" value="255 * (1 - [REFERENCE.D])"/>
         <Image resource="bush_night"/>
       </PartImage>
       <PartImage x="300" y="290" width="14" height="14">
-        <Transform target="y" value="306 - 60 * fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) / 3 + 0.000) - 7.0"/>
-        <Transform target="x" value="317 + 12 * fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) / 3 + 0.000) + 3 * sin((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) * 2.0944 + 0) - 7.0"/>
-        <Transform target="alpha" value="((fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) / 3 + 0.000) &gt;= 0) &amp;&amp; (fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) / 3 + 0.000) &lt; 0.3)) ? 225 * (1 - 0.6 * fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) / 3 + 0.000)) * ([BATTERY_PERCENT] &lt;= 20 ? 0.35 : 1) : 0"/>
+        <Transform target="y" value="306 - 60 * fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 3 + 0.000) - 7.0"/>
+        <Transform target="x" value="317 + 12 * fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 3 + 0.000) + 3 * sin(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) * 2.0944 + 0) - 7.0"/>
+        <Transform target="alpha" value="((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 3 + 0.000) &gt;= 0) &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 3 + 0.000) &lt; 0.3)) ? 225 * (1 - 0.6 * fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 3 + 0.000)) * ([BATTERY_PERCENT] &lt;= 20 ? 0.35 : 1) : 0"/>
         <Image resource="puff_s"/>
       </PartImage>
       <PartImage x="300" y="290" width="22" height="22">
-        <Transform target="y" value="306 - 60 * fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) / 3 + 0.000) - 11.0"/>
-        <Transform target="x" value="317 + 12 * fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) / 3 + 0.000) + 3 * sin((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) * 2.0944 + 0) - 11.0"/>
-        <Transform target="alpha" value="((fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) / 3 + 0.000) &gt;= 0.3) &amp;&amp; (fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) / 3 + 0.000) &lt; 0.65)) ? 225 * (1 - 0.6 * fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) / 3 + 0.000)) * ([BATTERY_PERCENT] &lt;= 20 ? 0.35 : 1) : 0"/>
+        <Transform target="y" value="306 - 60 * fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 3 + 0.000) - 11.0"/>
+        <Transform target="x" value="317 + 12 * fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 3 + 0.000) + 3 * sin(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) * 2.0944 + 0) - 11.0"/>
+        <Transform target="alpha" value="((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 3 + 0.000) &gt;= 0.3) &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 3 + 0.000) &lt; 0.65)) ? 225 * (1 - 0.6 * fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 3 + 0.000)) * ([BATTERY_PERCENT] &lt;= 20 ? 0.35 : 1) : 0"/>
         <Image resource="puff_m"/>
       </PartImage>
       <PartImage x="300" y="290" width="32" height="32">
-        <Transform target="y" value="306 - 60 * fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) / 3 + 0.000) - 16.0"/>
-        <Transform target="x" value="317 + 12 * fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) / 3 + 0.000) + 3 * sin((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) * 2.0944 + 0) - 16.0"/>
-        <Transform target="alpha" value="((fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) / 3 + 0.000) &gt;= 0.65) &amp;&amp; (fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) / 3 + 0.000) &lt; 1.01)) ? 225 * (1 - 0.6 * fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) / 3 + 0.000)) * ([BATTERY_PERCENT] &lt;= 20 ? 0.35 : 1) : 0"/>
+        <Transform target="y" value="306 - 60 * fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 3 + 0.000) - 16.0"/>
+        <Transform target="x" value="317 + 12 * fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 3 + 0.000) + 3 * sin(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) * 2.0944 + 0) - 16.0"/>
+        <Transform target="alpha" value="((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 3 + 0.000) &gt;= 0.65) &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 3 + 0.000) &lt; 1.01)) ? 225 * (1 - 0.6 * fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 3 + 0.000)) * ([BATTERY_PERCENT] &lt;= 20 ? 0.35 : 1) : 0"/>
         <Image resource="puff_l"/>
       </PartImage>
       <PartImage x="300" y="290" width="14" height="14">
-        <Transform target="y" value="306 - 60 * fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) / 3 + 0.333) - 7.0"/>
-        <Transform target="x" value="317 + 12 * fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) / 3 + 0.333) + 3 * sin((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) * 2.0944 + 2) - 7.0"/>
-        <Transform target="alpha" value="((fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) / 3 + 0.333) &gt;= 0) &amp;&amp; (fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) / 3 + 0.333) &lt; 0.3)) ? 225 * (1 - 0.6 * fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) / 3 + 0.333)) * ([BATTERY_PERCENT] &lt;= 20 ? 0.35 : 1) : 0"/>
+        <Transform target="y" value="306 - 60 * fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 3 + 0.333) - 7.0"/>
+        <Transform target="x" value="317 + 12 * fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 3 + 0.333) + 3 * sin(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) * 2.0944 + 2) - 7.0"/>
+        <Transform target="alpha" value="((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 3 + 0.333) &gt;= 0) &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 3 + 0.333) &lt; 0.3)) ? 225 * (1 - 0.6 * fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 3 + 0.333)) * ([BATTERY_PERCENT] &lt;= 20 ? 0.35 : 1) : 0"/>
         <Image resource="puff_s"/>
       </PartImage>
       <PartImage x="300" y="290" width="27" height="27">
-        <Transform target="y" value="306 - 60 * fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) / 3 + 0.333) - 13.5"/>
-        <Transform target="x" value="317 + 12 * fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) / 3 + 0.333) + 3 * sin((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) * 2.0944 + 2) - 13.5"/>
-        <Transform target="alpha" value="((fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) / 3 + 0.333) &gt;= 0.3) &amp;&amp; (fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) / 3 + 0.333) &lt; 0.65)) ? 225 * (1 - 0.6 * fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) / 3 + 0.333)) * ([BATTERY_PERCENT] &lt;= 20 ? 0.35 : 1) : 0"/>
+        <Transform target="y" value="306 - 60 * fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 3 + 0.333) - 13.5"/>
+        <Transform target="x" value="317 + 12 * fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 3 + 0.333) + 3 * sin(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) * 2.0944 + 2) - 13.5"/>
+        <Transform target="alpha" value="((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 3 + 0.333) &gt;= 0.3) &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 3 + 0.333) &lt; 0.65)) ? 225 * (1 - 0.6 * fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 3 + 0.333)) * ([BATTERY_PERCENT] &lt;= 20 ? 0.35 : 1) : 0"/>
         <Image resource="puff_m"/>
       </PartImage>
       <PartImage x="300" y="290" width="40" height="40">
-        <Transform target="y" value="306 - 60 * fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) / 3 + 0.333) - 20.0"/>
-        <Transform target="x" value="317 + 12 * fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) / 3 + 0.333) + 3 * sin((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) * 2.0944 + 2) - 20.0"/>
-        <Transform target="alpha" value="((fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) / 3 + 0.333) &gt;= 0.65) &amp;&amp; (fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) / 3 + 0.333) &lt; 1.01)) ? 225 * (1 - 0.6 * fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) / 3 + 0.333)) * ([BATTERY_PERCENT] &lt;= 20 ? 0.35 : 1) : 0"/>
+        <Transform target="y" value="306 - 60 * fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 3 + 0.333) - 20.0"/>
+        <Transform target="x" value="317 + 12 * fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 3 + 0.333) + 3 * sin(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) * 2.0944 + 2) - 20.0"/>
+        <Transform target="alpha" value="((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 3 + 0.333) &gt;= 0.65) &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 3 + 0.333) &lt; 1.01)) ? 225 * (1 - 0.6 * fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 3 + 0.333)) * ([BATTERY_PERCENT] &lt;= 20 ? 0.35 : 1) : 0"/>
         <Image resource="puff_l"/>
       </PartImage>
       <PartImage x="300" y="290" width="14" height="14">
-        <Transform target="y" value="306 - 60 * fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) / 3 + 0.667) - 7.0"/>
-        <Transform target="x" value="317 + 12 * fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) / 3 + 0.667) + 3 * sin((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) * 2.0944 + 4) - 7.0"/>
-        <Transform target="alpha" value="((fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) / 3 + 0.667) &gt;= 0) &amp;&amp; (fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) / 3 + 0.667) &lt; 0.3)) ? 225 * (1 - 0.6 * fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) / 3 + 0.667)) * ([BATTERY_PERCENT] &lt;= 20 ? 0.35 : 1) : 0"/>
+        <Transform target="y" value="306 - 60 * fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 3 + 0.667) - 7.0"/>
+        <Transform target="x" value="317 + 12 * fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 3 + 0.667) + 3 * sin(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) * 2.0944 + 4) - 7.0"/>
+        <Transform target="alpha" value="((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 3 + 0.667) &gt;= 0) &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 3 + 0.667) &lt; 0.3)) ? 225 * (1 - 0.6 * fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 3 + 0.667)) * ([BATTERY_PERCENT] &lt;= 20 ? 0.35 : 1) : 0"/>
         <Image resource="puff_s"/>
       </PartImage>
       <PartImage x="300" y="290" width="22" height="22">
-        <Transform target="y" value="306 - 60 * fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) / 3 + 0.667) - 11.0"/>
-        <Transform target="x" value="317 + 12 * fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) / 3 + 0.667) + 3 * sin((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) * 2.0944 + 4) - 11.0"/>
-        <Transform target="alpha" value="((fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) / 3 + 0.667) &gt;= 0.3) &amp;&amp; (fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) / 3 + 0.667) &lt; 0.65)) ? 225 * (1 - 0.6 * fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) / 3 + 0.667)) * ([BATTERY_PERCENT] &lt;= 20 ? 0.35 : 1) : 0"/>
+        <Transform target="y" value="306 - 60 * fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 3 + 0.667) - 11.0"/>
+        <Transform target="x" value="317 + 12 * fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 3 + 0.667) + 3 * sin(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) * 2.0944 + 4) - 11.0"/>
+        <Transform target="alpha" value="((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 3 + 0.667) &gt;= 0.3) &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 3 + 0.667) &lt; 0.65)) ? 225 * (1 - 0.6 * fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 3 + 0.667)) * ([BATTERY_PERCENT] &lt;= 20 ? 0.35 : 1) : 0"/>
         <Image resource="puff_m"/>
       </PartImage>
       <PartImage x="300" y="290" width="32" height="32">
-        <Transform target="y" value="306 - 60 * fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) / 3 + 0.667) - 16.0"/>
-        <Transform target="x" value="317 + 12 * fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) / 3 + 0.667) + 3 * sin((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) * 2.0944 + 4) - 16.0"/>
-        <Transform target="alpha" value="((fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) / 3 + 0.667) &gt;= 0.65) &amp;&amp; (fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) / 3 + 0.667) &lt; 1.01)) ? 225 * (1 - 0.6 * fract((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) / 3 + 0.667)) * ([BATTERY_PERCENT] &lt;= 20 ? 0.35 : 1) : 0"/>
+        <Transform target="y" value="306 - 60 * fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 3 + 0.667) - 16.0"/>
+        <Transform target="x" value="317 + 12 * fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 3 + 0.667) + 3 * sin(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) * 2.0944 + 4) - 16.0"/>
+        <Transform target="alpha" value="((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 3 + 0.667) &gt;= 0.65) &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 3 + 0.667) &lt; 1.01)) ? 225 * (1 - 0.6 * fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 3 + 0.667)) * ([BATTERY_PERCENT] &lt;= 20 ? 0.35 : 1) : 0"/>
         <Image resource="puff_l"/>
       </PartImage>
       <PartImage x="96" y="330" width="60" height="30">
-        <Transform target="alpha" value="((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &gt;= 32 &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 34) ? 255 : 0"/>
+        <Transform target="alpha" value="([REFERENCE.TP] &gt;= 32 &amp;&amp; [REFERENCE.TP] &lt; 34) ? 255 : 0"/>
         <Image resource="bubble"/>
       </PartImage>
+      <PartImage x="0" y="0" width="450" height="450" name="fog">
+        <Transform target="x" value="-450 * fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 40)"/>
+        <Transform target="alpha" value="235 * [REFERENCE.FOG]"/>
+        <Image resource="fog"/>
+      </PartImage>
+      <PartImage x="0" y="-450" width="450" height="900" name="rainFar">
+        <Transform target="y" value="-450 + 450 * fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 1.1)"/>
+        <Transform target="alpha" value="255 * [REFERENCE.RAIN]"/>
+        <Image resource="rain"/>
+      </PartImage>
+      <PartImage x="0" y="-450" width="450" height="900" name="rainNear">
+        <Transform target="y" value="-450 + 450 * fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 0.7)"/>
+        <Transform target="alpha" value="255 * clamp(([REFERENCE.RAIN] - 0.45) / 0.55, 0, 1)"/>
+        <Image resource="rain_near"/>
+      </PartImage>
+      <PartImage x="0" y="-450" width="450" height="900" name="snow">
+        <Transform target="y" value="-450 + 450 * fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 9)"/>
+        <Transform target="x" value="6 * sin(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) * 0.8)"/>
+        <Transform target="alpha" value="255 * [REFERENCE.SNOW]"/>
+        <Image resource="snow"/>
+      </PartImage>
+      <PartDraw x="0" y="0" width="450" height="450" name="lightning">
+        <Transform target="alpha" value="([REFERENCE.C] == 9 &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 6.3) &lt; 0.025 || (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 6.3) &gt; 0.05 &amp;&amp; fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 6.3) &lt; 0.065))) ? 175 : 0"/>
+        <Rectangle x="0" y="0" width="450" height="450"><Fill color="#ffeef2ff"/></Rectangle>
+      </PartDraw>
+    </Group>
+    <PartDraw x="0" y="0" width="450" height="450" name="sweepMono" blendMode="SATURATION">
+      <Variant mode="AMBIENT" target="alpha" value="0"/>
+      <Transform target="alpha" value="([CONFIGURATION.mono] ? 255 : 0) * (1 - [REFERENCE.FLIP])"/>
+      <Arc direction="CLOCKWISE" startAngle="0" endAngle="0.01" centerX="225" centerY="225" width="225" height="225">
+        <Transform target="endAngle" value="clamp(0.01 + [MINUTE] * 6 + [SECOND] * 0.1, 0, 360)"/>
+        <Stroke color="#ff808080" cap="BUTT" thickness="225"/>
+      </Arc>
+    </PartDraw>
+    <PartDraw x="0" y="0" width="450" height="450" name="sweepShade">
+      <Variant mode="AMBIENT" target="alpha" value="0"/>
+      <Transform target="alpha" value="([CONFIGURATION.dim] == 0 ? 0 : ([CONFIGURATION.dim] == 1 ? 110 : ([CONFIGURATION.dim] == 2 ? 170 : 225))) * (1 - [REFERENCE.FLIP])"/>
+      <Arc direction="CLOCKWISE" startAngle="0" endAngle="0.01" centerX="225" centerY="225" width="225" height="225">
+        <Transform target="endAngle" value="clamp(0.01 + [MINUTE] * 6 + [SECOND] * 0.1, 0, 360)"/>
+        <Stroke color="#ff000008" cap="BUTT" thickness="225"/>
+      </Arc>
+    </PartDraw>
+    <Group x="0" y="0" width="450" height="450" name="ticks">
+      <Variant mode="AMBIENT" target="alpha" value="0"/>
+      <Transform target="alpha" value="255 * (1 - [REFERENCE.FLIP])"/>
+      <PartDraw x="0" y="0" width="450" height="450" renderMode="MASK">
+        <Arc direction="CLOCKWISE" startAngle="0" endAngle="0.01" centerX="225" centerY="225" width="225" height="225">
+          <Transform target="endAngle" value="clamp(0.01 + [MINUTE] * 6 + [SECOND] * 0.1, 0, 360)"/>
+          <Stroke color="#ffffffff" cap="BUTT" thickness="225"/>
+        </Arc>
+      </PartDraw>
+      <PartImage x="0" y="0" width="450" height="450" tintColor="[CONFIGURATION.accent.0]"><Image resource="ticks"/></PartImage>
     </Group>
     <PartAnimatedImage x="262" y="330" width="150" height="85" name="tapSheep">
       <Variant mode="AMBIENT" target="alpha" value="0"/>
@@ -379,30 +535,37 @@
     </PartAnimatedImage>
     <PartText x="96" y="331" width="60" height="22">
       <Variant mode="AMBIENT" target="alpha" value="0"/>
-      <Transform target="alpha" value="((fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &gt;= 32 &amp;&amp; (fract(([SECONDS_IN_DAY] + [MILLISECOND] / 1000) / 45) * 45) &lt; 34) ? 255 : 0"/>
+      <Transform target="alpha" value="([REFERENCE.TP] &gt;= 32 &amp;&amp; [REFERENCE.TP] &lt; 34) ? 255 : 0"/>
       <Text align="CENTER" ellipsis="FALSE"><Font family="SYNC_TO_DEVICE" size="14" weight="BOLD" slant="NORMAL" color="#ff3c3c50">Grrr!</Font></Text>
     </PartText>
-    <PartText x="27" y="84" width="400" height="34">
-      <Variant mode="AMBIENT" target="alpha" value="0"/>
-      <Text align="CENTER" ellipsis="FALSE"><Font family="SYNC_TO_DEVICE" size="23" weight="SEMI_BOLD" slant="NORMAL" color="#55000028">
+    <PartText x="25" y="36" width="400" height="34">
+      <Variant mode="AMBIENT" target="alpha" value="150"/>
+      <Text align="CENTER" ellipsis="FALSE"><Font family="SYNC_TO_DEVICE" size="25" weight="SEMI_BOLD" slant="NORMAL" color="#ffffffff">
         <Template>%s  %s  %s<Parameter expression="[DAY_OF_WEEK_S]"/><Parameter expression="[DAY]"/><Parameter expression="[MONTH_S]"/></Template></Font></Text>
     </PartText>
-    <PartText x="25" y="82" width="400" height="34">
-      <Variant mode="AMBIENT" target="alpha" value="170"/>
-      <Text align="CENTER" ellipsis="FALSE"><Font family="SYNC_TO_DEVICE" size="23" weight="SEMI_BOLD" slant="NORMAL" color="#ffffffff">
-        <Template>%s  %s  %s<Parameter expression="[DAY_OF_WEEK_S]"/><Parameter expression="[DAY]"/><Parameter expression="[MONTH_S]"/></Template></Font></Text>
-    </PartText>
-    <DigitalClock x="18" y="107" width="420" height="128">
+    <PartText x="25" y="68" width="400" height="24" name="weather">
       <Variant mode="AMBIENT" target="alpha" value="0"/>
-      <TimeText format="hh:mm" hourFormat="SYNC_TO_DEVICE" align="CENTER" x="0" y="0" width="420" height="128">
-        <Font family="SYNC_TO_DEVICE" size="108" weight="BOLD" slant="NORMAL" color="#55000028"/>
-      </TimeText>
-    </DigitalClock>
-    <DigitalClock x="15" y="104" width="420" height="128">
-      <TimeText format="hh:mm" hourFormat="SYNC_TO_DEVICE" align="CENTER" x="0" y="0" width="420" height="128">
-        <Font family="SYNC_TO_DEVICE" size="108" weight="BOLD" slant="NORMAL" color="#ffffffff"/>
-      </TimeText>
-    </DigitalClock>
+      <Transform target="alpha" value="[WEATHER.IS_AVAILABLE] ? 215 : 0"/>
+      <Text align="CENTER" ellipsis="TRUE"><Font family="SYNC_TO_DEVICE" size="17" weight="MEDIUM" slant="NORMAL" color="#ffffffff">
+        <Template>%s°  %s<Parameter expression="[WEATHER.TEMPERATURE]"/><Parameter expression="[WEATHER.CONDITION_NAME]"/></Template></Font></Text>
+    </PartText>
+    <PartText x="25" y="68" width="400" height="230" name="hourLine" tintColor="[CONFIGURATION.accent.0]">
+      <Transform target="alpha" value="255 * (1 - [REFERENCE.FLIP])"/>
+      <Text align="CENTER" ellipsis="FALSE"><BitmapFont family="hrLine" size="230" color="#ffffffff"><Template>%s<Parameter expression="[CONFIGURATION.h24] ? [HOUR_0_23] : [HOUR_1_12]"/></Template></BitmapFont></Text>
+    </PartText>
+    <Group x="0" y="0" width="450" height="450" name="hourSolid">
+      <Variant mode="AMBIENT" target="alpha" value="0"/>
+      <Transform target="alpha" value="255 * (1 - [REFERENCE.FLIP])"/>
+      <PartDraw x="0" y="0" width="450" height="450" renderMode="MASK">
+        <Arc direction="COUNTER_CLOCKWISE" startAngle="0" endAngle="-0.01" centerX="225" centerY="225" width="225" height="225">
+          <Transform target="endAngle" value="-1 * clamp(360.01 - ([MINUTE] * 6 + [SECOND] * 0.1), 0, 360)"/>
+          <Stroke color="#ffffffff" cap="BUTT" thickness="225"/>
+        </Arc>
+      </PartDraw>
+      <PartText x="25" y="68" width="400" height="230" tintColor="[CONFIGURATION.accent.0]">
+        <Text align="CENTER" ellipsis="FALSE"><BitmapFont family="hrSolid" size="230" color="#ffffffff"><Template>%s<Parameter expression="[CONFIGURATION.h24] ? [HOUR_0_23] : [HOUR_1_12]"/></Template></BitmapFont></Text>
+      </PartText>
+    </Group>
     <Group x="0" y="0" width="450" height="450" name="stats">
       <Variant mode="AMBIENT" target="alpha" value="0"/>
       <PartDraw x="0" y="0" width="450" height="450">
@@ -457,5 +620,25 @@
       </PartText>
       </Complication>
     </ComplicationSlot>
+    <Group x="0" y="0" width="450" height="450" name="flipRing" pivotX="0.5" pivotY="0.5" tintColor="[CONFIGURATION.accent.0]">
+      <Variant mode="AMBIENT" target="alpha" value="0"/>
+      <Transform target="scaleX" value="0.05 + 0.95 * [REFERENCE.FLIP]"/>
+      <Transform target="scaleY" value="0.05 + 0.95 * [REFERENCE.FLIP]"/>
+      <Transform target="alpha" value="([REFERENCE.FLIP] &gt; 0) ? 255 * (1 - [REFERENCE.FLIP]) : 0"/>
+      <PartImage x="0" y="0" width="450" height="450"><Image resource="ring"/></PartImage>
+    </Group>
+    <Group x="0" y="0" width="450" height="450" name="hourNext" pivotX="0.5" pivotY="0.4">
+      <Variant mode="AMBIENT" target="alpha" value="0"/>
+      <Transform target="scaleX" value="1.35 - 0.35 * [REFERENCE.FLIP]"/>
+      <Transform target="scaleY" value="1.35 - 0.35 * [REFERENCE.FLIP]"/>
+      <Transform target="alpha" value="255 * [REFERENCE.FLIP]"/>
+      <PartText x="25" y="68" width="400" height="230" tintColor="[CONFIGURATION.accent.0]">
+        <Text align="CENTER" ellipsis="FALSE"><BitmapFont family="hrSolid" size="230" color="#ffffffff"><Template>%s<Parameter expression="[CONFIGURATION.h24] ? (([HOUR_0_23] + 1) % 24) : (([HOUR_1_12] % 12) + 1)"/></Template></BitmapFont></Text>
+      </PartText>
+    </Group>
+    <Group x="205" y="0" width="40" height="450" name="minuteHand" pivotX="0.5" pivotY="0.5">
+      <Transform target="angle" value="[MINUTE] * 6 + [SECOND] * 0.1"/>
+      <PartImage x="0" y="0" width="40" height="450" tintColor="[CONFIGURATION.accent.0]"><Image resource="min_hand"/></PartImage>
+    </Group>
   </Scene>
 </WatchFace>

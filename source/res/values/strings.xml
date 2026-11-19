@@ -1,1 +1,4 @@
-<resources><string name="app_name">Aurora Farm</string></resources>
+<resources><string name="app_name">Aurora Sweep</string>
+<string name="accent_color">Color</string><string name="c_white">White</string><string name="c_gold">Gold</string><string name="c_aurora">Aurora</string><string name="c_lilac">Lilac</string><string name="c_sky">Sky</string>
+<string name="sweep_mono">Black and white behind the hand</string><string name="sweep_dim">Darken behind the hand</string><string name="dim_none">None</string><string name="dim_light">Light</string><string name="dim_medium">Medium</string><string name="dim_strong">Strong</string>
+<string name="format_24h">24-hour</string></resources>
