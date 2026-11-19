@@ -148,8 +148,8 @@ Screenshots below were taken on the watch with these overrides (fixed time, weat
 
 - Sunrise/sunset is an approximation (no equation of time); expect errors of up to ~15 minutes.
 - Location is fixed at build time; the face does not read GPS.
-- Weather depends on the watch's weather provider. Samsung reports code 14 (partly cloudy) with the name "Clear",
-  so partly cloudy only slightly greys the sky.
+- Weather depends on the watch's weather provider. Partly cloudy (code 14) only slightly greys the sky by design,
+  since providers report it for mostly sunny conditions too.
 - Animated scenes cost CPU while the screen is on (measured ~70% of one core on a Galaxy Watch6 Classic, vs ~85%
   for the original). The always-on display shows only the outlined hour, date and minute hand.
 - Tap targets (sheep, cabin) are inherited from the original and were not re-verified after the clock overlay was added.
