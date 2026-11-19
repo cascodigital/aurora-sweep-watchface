@@ -130,9 +130,19 @@ screenshots. Overrides replace real data sources so a whole day, year or weather
 
 Override keys: `m` (minute of day), `doy` (day of year), `cond` (`WEATHER.CONDITION`), `flip` (hour-change progress 0–1).
 
-| Day cycle | Weather codes | Seasons and hour change |
-|---|---|---|
-| ![day](media/day-cycle.png) | ![weather](media/weather.png) | ![seasons](media/seasons.png) |
+Screenshots below were taken on the watch with these overrides (fixed time, weather or day of year).
+
+### Day cycle
+
+![Day cycle](media/day-cycle.png)
+
+### Weather
+
+![Weather](media/weather.png)
+
+### Seasons and hour change
+
+![Seasons and hour change](media/seasons.png)
 
 ## Limitations
 

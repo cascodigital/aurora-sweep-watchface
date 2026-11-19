@@ -21,9 +21,9 @@
   </UserConfigurations>
   <Scene backgroundColor="#ff000000">
     <Group x="0" y="0" width="1" height="1" name="refs">
-      <PartDraw x="0" y="0" width="1" height="1"><Transform target="x" value="[HOUR_0_23] * 60 + [MINUTE] + [SECOND] / 60"/><Reference name="M" source="x" defaultValue="0"/><Rectangle x="0" y="0" width="1" height="1"><Fill color="#00000000"/></Rectangle></PartDraw>
+      <PartDraw x="0" y="0" width="1" height="1"><Transform target="x" value="780"/><Reference name="M" source="x" defaultValue="0"/><Rectangle x="0" y="0" width="1" height="1"><Fill color="#00000000"/></Rectangle></PartDraw>
       <PartDraw x="0" y="0" width="1" height="1"><Transform target="x" value="[DAY_OF_YEAR]"/><Reference name="DOY" source="x" defaultValue="0"/><Rectangle x="0" y="0" width="1" height="1"><Fill color="#00000000"/></Rectangle></PartDraw>
-      <PartDraw x="0" y="0" width="1" height="1"><Transform target="x" value="([WEATHER.IS_AVAILABLE] ? [WEATHER.CONDITION] : 0)"/><Reference name="C" source="x" defaultValue="0"/><Rectangle x="0" y="0" width="1" height="1"><Fill color="#00000000"/></Rectangle></PartDraw>
+      <PartDraw x="0" y="0" width="1" height="1"><Transform target="x" value="1"/><Reference name="C" source="x" defaultValue="0"/><Rectangle x="0" y="0" width="1" height="1"><Fill color="#00000000"/></Rectangle></PartDraw>
       <PartDraw x="0" y="0" width="1" height="1"><Transform target="x" value="365.0 + 58.1 * cos(6.2832 * ([REFERENCE.DOY] - 355) / 365)"/><Reference name="HD" source="x" defaultValue="0"/><Rectangle x="0" y="0" width="1" height="1"><Fill color="#00000000"/></Rectangle></PartDraw>
       <PartDraw x="0" y="0" width="1" height="1"><Transform target="x" value="744.9 - [REFERENCE.HD]"/><Reference name="RISE" source="x" defaultValue="0"/><Rectangle x="0" y="0" width="1" height="1"><Fill color="#00000000"/></Rectangle></PartDraw>
       <PartDraw x="0" y="0" width="1" height="1"><Transform target="x" value="744.9 + [REFERENCE.HD]"/><Reference name="SET" source="x" defaultValue="0"/><Rectangle x="0" y="0" width="1" height="1"><Fill color="#00000000"/></Rectangle></PartDraw>
@@ -545,7 +545,7 @@
     </PartText>
     <PartText x="25" y="68" width="400" height="24" name="weather">
       <Variant mode="AMBIENT" target="alpha" value="0"/>
-      <Transform target="alpha" value="[WEATHER.IS_AVAILABLE] ? 215 : 0"/>
+      <Transform target="alpha" value="0"/>
       <Text align="CENTER" ellipsis="TRUE"><Font family="SYNC_TO_DEVICE" size="17" weight="MEDIUM" slant="NORMAL" color="#ffffffff">
         <Template>%s°  %s<Parameter expression="[WEATHER.TEMPERATURE]"/><Parameter expression="[WEATHER.CONDITION_NAME]"/></Template></Font></Text>
     </PartText>

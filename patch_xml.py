@@ -119,5 +119,7 @@ i = s.index('    <PartAnimatedImage x="262" y="330"'); s = s[:i] + overlay + s[i
 a = s.index('    <PartText x="27" y="84"'); b = s.index('    <Group x="0" y="0" width="450" height="450" name="stats">')
 s = s[:a] + clock + s[b:]
 s = s.replace('  </Scene>', flip + hand + '  </Scene>')
+if 'cond' in OV:   # forced weather in tests: hide the real temperature/condition line
+    s = s.replace('value="[WEATHER.IS_AVAILABLE] ? 215 : 0"', 'value="0"')
 open(f'{B}/source/res/raw/watchface.xml', 'w').write(s)
 print('ok', len(s))
